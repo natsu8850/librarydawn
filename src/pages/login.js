@@ -71,7 +71,7 @@ function Login() {
                             <AiFillEyeInvisible style={{ visibility: passwordShown ? 'hidden' : 'visible', display: passwordShown ? 'none' : 'block' }} />
                         </ShowPassword>
                     </PasswordDiv>
-                    <Regsiter>Don't have an account? <a href='https://design.nprintgallery.com/login-register'>Regsiter here</a></Regsiter>
+                    <Regsiter>Dont have an account? <a href='https://design.nprintgallery.com/login-register'>Regsiter here</a></Regsiter>
                     <LoginButton >
                         Log In
                     </LoginButton>
