@@ -1,6 +1,7 @@
 import styled from "styled-components"
 import { FaChevronCircleDown, FaChevronCircleUp } from "react-icons/fa"
 import { useRef, useState } from "react";
+import { deleteBookApi } from "../../../../utils/booksAPI";
 
 function DisplayBooks({ book }) {
 
@@ -19,16 +20,18 @@ function DisplayBooks({ book }) {
     const [isDisabled, setIsDisabled] = useState(false);
 
 
-    function deleteBook() {
-        toggleAccordion();
-        setIsDisabled(true);
-    }
+    // async function deleteBook() {
+    //     const data = await deleteBookApi(book.acc_no);
+    //     if (data)
+    //         toggleAccordion();
+    //     setIsDisabled(true);
+    // }
 
     return (
         <Wrapper>
             <BeforeExpand onClick={toggleAccordion} disabled={isDisabled}>
                 <Fields>
-                    <strong>Book Name: </strong>{book.name}
+                    <strong>Book Name: </strong>{book.title}
                 </Fields>
                 {active ?
                     <FaChevronCircleUp />
@@ -38,24 +41,24 @@ function DisplayBooks({ book }) {
             <AccordionContent ref={refContent} style={{ maxHeight: `${height}` }}>
                 <AccordionDivider active={active} />
                 <Fields>
-                    <strong>Name: </strong> {book.name}
+                    <strong>Name: </strong> {book.title}
                 </Fields>
                 <Fields>
-                    <strong>Accession Number: </strong> {book.accessionNumber}
+                    <strong>Accession Number: </strong> {book.acc_no}
                 </Fields>
                 <Fields>
-                    <strong>Edition: </strong> {book.edition}
+                    <strong>Ref no: </strong> {book.ref_no}
                 </Fields>
                 <Fields>
-                    <strong>Publisher Name: </strong> {book.publisherName}
+                    <strong>Edition Name: </strong> {book.edition_name}
                 </Fields>
                 <Fields>
-                    <strong>Year: </strong> {book.year}
+                    <strong>Year: </strong> {book.pub_year}
                 </Fields>
                 <DeleteButton>
                     <Confirmation visibility={isConfirmation}>
                         Are you sure to delete?
-                        <SureToProceedButton bgColor='#25AE32' onClick={deleteBook}>Yes</SureToProceedButton>
+                        <SureToProceedButton bgColor='#25AE32' >Yes</SureToProceedButton>
                         <SureToProceedButton bgColor='#D0111F' onClick={() => setIsConfirmation(false)}>No</SureToProceedButton>
                     </Confirmation>
                     <VerifyButtonButton visibility={isConfirmation} onClick={() => setIsConfirmation(true)}>Delete</VerifyButtonButton>

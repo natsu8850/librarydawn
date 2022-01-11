@@ -1,26 +1,22 @@
+import axios from "axios";
 import { useRef, useState } from "react";
 import styled from "styled-components"
+import { addBook, getAllBooks } from "../../../../utils/booksAPI";
 import DisplayBooks from "./DisplayBooks";
 
 function ManageBooksDash() {
 
-    const [books, setBooks] = useState([
-        {
-            name: 'harry potter'
-        },
-        {
-            name: 'harry potter 2'
-        }
-    ])
+    const [books, setBooks] = useState([]);
+
+    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkxJQjEyMyIsImVtYWlsX3dvcmsiOiJhc2RmYWEiLCJpc0xpYnJhcmlhbiI6dHJ1ZSwiaWF0IjoxNjQxNzk0ODM2LCJleHAiOjE2NDQzODY4MzZ9.fcbGrNM5JPZajl_xZmNebjStOVgHSryWRUpy4Lp8cp4';
 
     //NEW Book
     const [newBook, setNewBook] = useState({
-        name: '',
-        accessionNumber: '',
-        authors: [],
-        edition: 'First',
-        publisherName: '',
-        year: '',
+        title: '',
+        acc_no: '',
+        ref_no: '',
+        edition_name: '',
+        pub_year: ''
     });
 
     const [newAuthors, setNewAuthors] = useState([]);
@@ -32,18 +28,6 @@ function ManageBooksDash() {
         setHeight(active === true ? '0px' : `${refContent.current.scrollHeight}px`);
     }
 
-    function handleAddBook() {
-        setBooks(oldArray => [...oldArray, newBook]);
-        setNewBook({
-            name: '',
-            accessionNumber: '',
-            authors: [],
-            edition: 'First',
-            publisherName: '',
-            year: '',
-        })
-    }
-
     const [isConfirmation, setIsConfirmation] = useState(false);
 
     const refContent = useRef(null);
@@ -53,11 +37,77 @@ function ManageBooksDash() {
     const [height, setHeight] = useState('0px');
     const [isDisabled, setIsDisabled] = useState(false);
 
+
+    async function fetch() {
+        const data = await getAllBooks();
+        if (data === 'UNAUTHORIZED') {
+            alert('You are not authorized, please login again.')
+        }
+        else if (data === 'NOT_ALLOWED') {
+            alert('You are not allowed to perform this action!! Try logging in again')
+        }
+        else if (data === 'NOT_FOUND') {
+            alert('Something went wrong, please try again, if the error presists contact IT team')
+        }
+        else {
+            setBooks(data);
+            console.log(books);
+        }
+    }
+
+    async function handleAddBook() {
+
+        if (!newBook.title || !newBook.acc_no || !newBook.ref_no || !newBook.pub_year || !newBook.edition_name) {
+            alert("Please provide all the details")
+            return;
+        }
+
+        const data = await addBook(token, newBook);
+
+        console.log(data);
+
+        if (data === 'MISSING_FIELDS') {
+            alert("Please provide all the details")
+            return;
+        }
+
+        else if (data.status === 404) {
+            alert(data.msg)
+            return;
+        }
+
+        else if (data.status === 409) {
+            alert(data.msg)
+            return;
+        }
+
+        else if (data.status === 500) {
+            alert(data.msg)
+            return;
+        }
+
+        else {
+            alert('BOOK HAS BEEN ADDED TO DATABASE')
+
+            setBooks(oldArray => [...oldArray, newBook]);
+            setNewBook({
+                title: '',
+                acc_no: '',
+                ref_no: '',
+                edition_name: '',
+                pub_year: ''
+            })
+        }
+    }
+
     return (
         <Wrapper>
             <HeadingAndButton>
                 <h1>Books</h1>
                 <button onClick={toggleAccordion}>Add book</button>
+                <button onClick={fetch}>
+                    Update
+                </button>
             </HeadingAndButton>
             <AccordionContent ref={refContent} style={{ maxHeight: `${height}` }}>
                 <AddBook>
@@ -68,8 +118,8 @@ function ManageBooksDash() {
                             </Label>
                             <Field
                                 type='text'
-                                value={newBook.name}
-                                onChange={(e) => { setNewBook({ ...newBook, name: e.target.value }); }}
+                                value={newBook.title}
+                                onChange={(e) => { setNewBook({ ...newBook, title: e.target.value }); }}
                             />
                         </FieldContainer>
                         <FieldContainer>
@@ -78,8 +128,8 @@ function ManageBooksDash() {
                             </Label>
                             <Field
                                 type='text'
-                                value={newBook.accessionNumber}
-                                onChange={(e) => { setNewBook({ ...newBook, accessionNumber: e.target.value }); }}
+                                value={newBook.acc_no}
+                                onChange={(e) => { setNewBook({ ...newBook, acc_no: e.target.value }); }}
                             />
                         </FieldContainer>
                         <FieldContainer>
@@ -87,32 +137,32 @@ function ManageBooksDash() {
                                 Year
                             </Label>
                             <Field
-                                type='text'
-                                value={newBook.year}
-                                onChange={(e) => { setNewBook({ ...newBook, year: e.target.value }); }}
+                                type='number'
+                                value={newBook.pub_year}
+                                onChange={(e) => { setNewBook({ ...newBook, pub_year: e.target.value }); }}
                             />
                         </FieldContainer>
                         <FieldContainer>
                             <Label>
-                                Publisher Name
+                                Edition Name
                             </Label>
                             <Field
                                 type='text'
-                                value={newBook.publisherName}
-                                onChange={(e) => { setNewBook({ ...newBook, publisherName: e.target.value }); }}
+                                value={newBook.edition_name}
+                                onChange={(e) => { setNewBook({ ...newBook, edition_name: e.target.value }); }}
                             />
                         </FieldContainer>
                         <FieldContainer>
                             <Label>
-                                Edition
+                                Ref No
                             </Label>
                             <Field
                                 type='text'
-                                value={newBook.edition}
-                                onChange={(e) => { setNewBook({ ...newBook, publisherName: e.target.value }); }}
+                                value={newBook.ref_no}
+                                onChange={(e) => { setNewBook({ ...newBook, ref_no: e.target.value }); }}
                             />
                         </FieldContainer>
-                        <FieldContainer>
+                        {/* <FieldContainer>
                             <Label>
                                 Author Name
                             </Label>
@@ -122,17 +172,6 @@ function ManageBooksDash() {
                                 onChange={(e) => {
                                     newAuthors[0] = e.target.value;
                                     console.log(newAuthors);
-                                }}
-                            />
-                        </FieldContainer>
-                        {/* <FieldContainer>
-                            <Label>
-                                Author Name
-                            </Label>
-                            <Field
-                                type='text'
-                                value={newBook.authors[1]}
-                                onChange={(e) => {
                                 }}
                             />
                         </FieldContainer> */}

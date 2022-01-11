@@ -28,7 +28,10 @@ function DisplayIssue({ issue }) {
         <Wrapper>
             <BeforeExpand onClick={toggleAccordion} disabled={isDisabled}>
                 <Fields>
-                    <strong>Book Name: </strong>{issue.bookName}
+                    <strong>Accession number: </strong>{issue.acc_no}
+                </Fields>
+                <Fields>
+                    <strong>Faculty id: </strong>{issue.id}
                 </Fields>
                 {active ?
                     <FaChevronCircleUp />
@@ -38,27 +41,27 @@ function DisplayIssue({ issue }) {
             <AccordionContent ref={refContent} style={{ maxHeight: `${height}` }}>
                 <AccordionDivider active={active} />
                 <Fields>
-                    <strong>Name: </strong> {issue.bookName}
+                    <strong>Accession Number: </strong> {issue.acc_no}
                 </Fields>
                 <Fields>
-                    <strong>Accession Number: </strong> {issue.accessionNumber}
+                    <strong>Faculty id: </strong> {issue.id}
                 </Fields>
                 <Fields>
-                    <strong>Edition: </strong> {issue.facultyId}
+                    <strong>Issue date: </strong> {issue.date_issued}
                 </Fields>
                 <Fields>
-                    <strong>Publisher Name: </strong> {issue.issueDate}
+                    <strong>Due date: </strong> {issue.due_date}
                 </Fields>
                 <Fields>
-                    <strong>Year: </strong> {issue.dueDate}
+                    <strong>Status: </strong> {issue.returned ? "Returned" : "Not returned"}
                 </Fields>
                 <DeleteButton>
                     <Confirmation visibility={isConfirmation}>
-                        Are you sure to delete?
+                        Are you sure to update?
                         <SureToProceedButton bgColor='#25AE32' onClick={deleteIssue}>Yes</SureToProceedButton>
                         <SureToProceedButton bgColor='#D0111F' onClick={() => setIsConfirmation(false)}>No</SureToProceedButton>
                     </Confirmation>
-                    <VerifyButtonButton visibility={isConfirmation} onClick={() => setIsConfirmation(true)}>Delete</VerifyButtonButton>
+                    <VerifyButtonButton visibility={isConfirmation} onClick={() => setIsConfirmation(true)}>Update status </VerifyButtonButton>
                 </DeleteButton>
             </AccordionContent>
         </Wrapper>
@@ -91,6 +94,7 @@ const BeforeExpand = styled.button`
 const Fields = styled.div`
     font-weight: 300;
     font-size: 17px;
+    line-height: 2.5rem;
     word-wrap: break-word;
     strong{
         font-weight: 500;

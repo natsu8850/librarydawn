@@ -1,22 +1,15 @@
-import { useContext } from "react";
-import styled from "styled-components";
-import AdminDashboardChild from "../Components/Dashboard/Admin/Dashboard";
+import styled from "styled-components"
+import AdminDashboardChild from "../../Components/Dashboard/Admin/Dashboard"
 
-
-function AdminDashBoard() {
-
+function admin() {
     return (
         <Wrapper>
             <AdminDashboardChild />
-            {/* <SideBar />
-            <MainDashBoard /> */}
         </Wrapper>
     )
-
 }
 
-export default AdminDashBoard
-
+export default admin
 
 const Wrapper = styled.div`
     min-height: 100vh;
