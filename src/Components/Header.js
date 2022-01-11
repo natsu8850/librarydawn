@@ -1,29 +1,32 @@
+import { useRouter } from "next/router";
 import styled from "styled-components";
 
 function Header() {
-    return (
-        <Wrapper>
-            <nav className="navbar">
-                <div className="inner-width">
-                    <img src="/images/logo.png" className="logo" style={{ borderRadius: '50%' }}></img>
-                    <button className="menu-toggler">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </button>
-                    <div className="navbar-menu">
-                        <a href="#home">Home</a>
-                        <a href="#about">About</a>
-                        <a href="#services">Service</a>
-                        <a href="#contact">Contact</a>
-                        {/* <a href='/login'>Login</a> */}
 
-                    </div>
-                </div>
-            </nav>
+	const router = useRouter();
+	return (
+		<Wrapper>
+			<nav className="navbar">
+				<div className="inner-width">
+					<img src="/images/logo.png" className="logo" style={{ borderRadius: '50%' }}></img>
+					<button className="menu-toggler">
+						<span></span>
+						<span></span>
+						<span></span>
+					</button>
+					<div className="navbar-menu">
+						<a href="#home">Home</a>
+						<a href="#about">About</a>
+						<a href="#services">Service</a>
+						<a href="#contact">Contact</a>
+						<a onClick={() => router.push('/login')}>Login</a>
 
-        </Wrapper>
-    )
+					</div>
+				</div>
+			</nav>
+
+		</Wrapper>
+	)
 }
 
 export default Header

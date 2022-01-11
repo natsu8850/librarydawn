@@ -1,9 +1,13 @@
 import styled from "styled-components"
 import { AiFillBook } from 'react-icons/ai'
-import { useState } from "react";
+import { useContext, useState } from "react";
 import OptionsChild from "./Components/OptionsChild";
 import ManageBooksDash from "./Components/ManageBooks";
 import ManageIssuesDash from "./Components/ManageIssuesDash";
+import { AuthContext } from "../../../Context/authContext/AuthContext";
+import { logout } from "../../../Context/authContext/AuthActions";
+import { useRouter } from "next/router";
+import Cookies from "js-cookie";
 
 function AdminDashboardChild() {
 
@@ -11,6 +15,8 @@ function AdminDashboardChild() {
 
     //Manage books
     //Manage borrowing
+    const { isFetching, dispatch, user } = useContext(AuthContext);
+    const router = useRouter();
 
     return (
         <>
@@ -30,6 +36,14 @@ function AdminDashboardChild() {
                             <h4>Manage Issues</h4>
                         </div>
                     </OptionsChild>
+                    <div onClick={() => {
+                        dispatch(logout); router.push('/'); Cookies.set('user', JSON.stringify(null));
+                    }}>
+                        <div style={{ cursor: 'pointer' }}>
+                            <AiFillBook style={{ fontSize: '40px' }} />
+                            <h4>Logout</h4>
+                        </div>
+                    </div>
                 </ManageBooks>
             </SideBarWrapper>
             {/* DASHBOARd */}

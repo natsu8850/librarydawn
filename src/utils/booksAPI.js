@@ -85,3 +85,23 @@ export async function searchBookApi(title) {
     }
 
 }
+
+export async function getBookAuthorAPI(acc_no) {
+    const session_url = `${url}/books/author`;
+
+    try {
+        const { data } = await axios.get(session_url, {
+            params: {
+                acc_no: acc_no,
+            }
+        });
+        return data;
+    }
+    catch (error) {
+        if (error.response.status === 404) {
+            return 'NOT_FOUND'
+        }
+        else return 'ERROR'
+    }
+
+}

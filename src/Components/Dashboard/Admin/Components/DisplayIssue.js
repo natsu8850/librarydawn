@@ -1,6 +1,7 @@
 import styled from "styled-components"
 import { FaChevronCircleDown, FaChevronCircleUp } from "react-icons/fa"
 import { useRef, useState } from "react";
+import { updateIssueStatus } from "../../../../utils/issuesAPI";
 
 function DisplayIssue({ issue }) {
 
@@ -19,9 +20,17 @@ function DisplayIssue({ issue }) {
     const [isDisabled, setIsDisabled] = useState(false);
 
 
-    function deleteIssue() {
-        toggleAccordion();
-        setIsDisabled(true);
+    async function updateIssue() {
+        const data = await updateIssueStatus({ acc_no: issue.acc_no, id: issue.id });
+        if (data === 'ERROR') {
+            alert('Something has gone wrong')
+        }
+        else if (data === 'BAD_REQUEST')
+            alert('Missing fields in request')
+        else {
+            toggleAccordion();
+            alert('Updated issue status')
+        }
     }
 
     return (
@@ -58,7 +67,7 @@ function DisplayIssue({ issue }) {
                 <DeleteButton>
                     <Confirmation visibility={isConfirmation}>
                         Are you sure to update?
-                        <SureToProceedButton bgColor='#25AE32' onClick={deleteIssue}>Yes</SureToProceedButton>
+                        <SureToProceedButton bgColor='#25AE32' onClick={updateIssue}>Yes</SureToProceedButton>
                         <SureToProceedButton bgColor='#D0111F' onClick={() => setIsConfirmation(false)}>No</SureToProceedButton>
                     </Confirmation>
                     <VerifyButtonButton visibility={isConfirmation} onClick={() => setIsConfirmation(true)}>Update status </VerifyButtonButton>

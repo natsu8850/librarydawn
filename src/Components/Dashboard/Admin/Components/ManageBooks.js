@@ -1,14 +1,16 @@
 import axios from "axios";
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import styled from "styled-components"
 import { addBook, getAllBooks } from "../../../../utils/booksAPI";
 import DisplayBooks from "./DisplayBooks";
+import { AuthContext } from '../../../../Context/authContext/AuthContext'
 
 function ManageBooksDash() {
 
     const [books, setBooks] = useState([]);
 
-    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkxJQjEyMyIsImVtYWlsX3dvcmsiOiJhc2RmYWEiLCJpc0xpYnJhcmlhbiI6dHJ1ZSwiaWF0IjoxNjQxNzk0ODM2LCJleHAiOjE2NDQzODY4MzZ9.fcbGrNM5JPZajl_xZmNebjStOVgHSryWRUpy4Lp8cp4';
+    const { user } = useContext(AuthContext);
+    const token = user.token;
 
     //NEW Book
     const [newBook, setNewBook] = useState({
@@ -16,7 +18,8 @@ function ManageBooksDash() {
         acc_no: '',
         ref_no: '',
         edition_name: '',
-        pub_year: ''
+        pub_year: '',
+        author: ''
     });
 
     const [newAuthors, setNewAuthors] = useState([]);
@@ -95,7 +98,8 @@ function ManageBooksDash() {
                 acc_no: '',
                 ref_no: '',
                 edition_name: '',
-                pub_year: ''
+                pub_year: '',
+                author: ''
             })
         }
     }
@@ -162,19 +166,18 @@ function ManageBooksDash() {
                                 onChange={(e) => { setNewBook({ ...newBook, ref_no: e.target.value }); }}
                             />
                         </FieldContainer>
-                        {/* <FieldContainer>
+
+                        <FieldContainer>
                             <Label>
-                                Author Name
+                                Author
                             </Label>
                             <Field
                                 type='text'
-                                value={newBook.authors[0]}
-                                onChange={(e) => {
-                                    newAuthors[0] = e.target.value;
-                                    console.log(newAuthors);
-                                }}
+                                value={newBook.author}
+                                onChange={(e) => { setNewBook({ ...newBook, author: e.target.value }); }}
                             />
-                        </FieldContainer> */}
+                        </FieldContainer>
+
                     </FormContainer>
                     <AddButton onClick={handleAddBook}>Add book</AddButton>
                 </AddBook>

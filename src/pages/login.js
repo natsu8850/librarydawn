@@ -1,7 +1,15 @@
+import { useRouter } from "next/router";
+import { useContext, useState } from "react";
 import styled from "styled-components"
 import Layout from "../Components/Layout/Layout"
+import { loginSuccess } from "../Context/authContext/AuthActions";
+import { AuthContext } from "../Context/authContext/AuthContext";
+import { adminLoginApi, facLoginAPI } from "../utils/authenticationApi";
 
-function login() {
+
+
+
+function Login() {
 
   function cambiar_login() {
     document.querySelector('.cont_forms').className = "cont_forms cont_forms_active_login";
@@ -26,6 +34,53 @@ function login() {
     }, 400);
 
 
+  }
+  const [fId, setfId] = useState('');
+  const [fEmail, setfEmail] = useState('');
+  const [fPwd, setfPwd] = useState('');
+
+  const [aId, setaId] = useState('');
+  const [aEmail, setaEmail] = useState('');
+  const [aPwd, setaPwd] = useState('');
+
+  const { isFetching, dispatch, user } = useContext(AuthContext);
+
+  const router = useRouter();
+
+  async function adminLogin() {
+    console.log('ADMIN LOGIN')
+    const data = await adminLoginApi(dispatch);
+
+    if (data === 'ERROR' || !data.isLibrarian) {
+      alert('Something has gone wrong please try again!');
+      return;
+    }
+    dispatch(loginSuccess(data));
+  }
+
+  async function facLogin() {
+    console.log('FAC LOGIN')
+
+    const data = await facLoginAPI(dispatch);
+
+    if (data === 'ERROR' || data.isLibrarian) {
+      alert('Something has gone wrong please try again!');
+      return;
+    }
+    dispatch(loginSuccess(data));
+  }
+
+  if (user) {
+    return (
+      <Wrapper>
+        <LoggedInDiv>
+          <h1>
+            YOU ARE ALREADY LOGGED IN AS {user.isLibrarian ? 'LIBRARIAN' : 'FACULTY'}
+          </h1>
+          <button onClick={() => { (user.isLibrarian) ? router.push('/dashboard/admin') : router.push('/dashboard/user') }}>Go to dashboard</button>
+        </LoggedInDiv>
+      </Wrapper>
+    )
   }
 
   return (
@@ -61,7 +116,6 @@ function login() {
                 </div>
               </div>
 
-
               <div className="cont_back_info">
                 <div className="cont_img_back_grey">
                   <img src="/images/book.jpg" />
@@ -74,25 +128,25 @@ function login() {
                 </div>
                 <div className="cont_form_login">
                   <h2>LOGIN</h2>
-                  <input type="text" placeholder="Login ID" />
-                  <input type="text" placeholder="Email" />
-                  <input type="password" placeholder="Password" />
+                  <input type="text" placeholder="Login ID" value={aId} onChange={(e) => { setaId(e.target.value) }} />
+                  <input type="text" placeholder="Email" value={aEmail} onChange={(e) => { setaEmail(e.target.value) }} />
+                  <input type="password" placeholder="Password" value={aPwd} onChange={(e) => { setaPwd(e.target.value) }} />
                   <button className="btn_login"
                     onClick={cambiar_login}
                   >
-                    <a href=""
-                      style={{ textDecoration: 'none', color: 'white', fontSize: '18px' }}>LOGIN</a></button>
+                    <a
+                      style={{ textDecoration: 'none', color: 'white', fontSize: '18px' }} onClick={adminLogin}>LOGIN</a></button>
                 </div>
 
                 <div className="cont_form_sign_up">
                   <h2>LOGIN</h2>
-                  <input type="text" placeholder="Faculty ID" />
-                  <input type="text" placeholder="Email" />
-                  <input type="password" placeholder="Password" />
+                  <input type="text" placeholder="Faculty ID" value={fId} onChange={(e) => { setfId(e.target.value) }} />
+                  <input type="text" placeholder="Email" value={fEmail} onChange={(e) => { setfEmail(e.target.value) }} />
+                  <input type="password" placeholder="Password" value={fPwd} onChange={(e) => { setfPwd(e.target.value) }} />
                   <button className="btn_sign_up"
                     onClick={cambiar_sign_up}
-                  ><a href=""
-                    style={{ textDecoration: 'none', color: 'white', fontSize: '18px' }}>LOGIN</a></button>
+                  ><a
+                    style={{ textDecoration: 'none', color: 'white', fontSize: '18px' }} onClick={facLogin}>LOGIN</a></button>
                 </div>
               </div>
             </div>
@@ -103,7 +157,29 @@ function login() {
   )
 }
 
-export default login
+export default Login
+
+const LoggedInDiv = styled.div`
+  background: url('/images/book.jpg');
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: white;
+
+  h1{
+    font-size: 40px;
+  }
+
+  row-gap: 30px;
+
+  button{
+    padding: 5px 10px;
+    cursor: pointer;
+  }
+`
 
 
 const Wrapper = styled.main`

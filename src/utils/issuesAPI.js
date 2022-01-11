@@ -15,6 +15,23 @@ export async function getAllIssues() {
     }
 }
 
+export async function getUserIssues(id) {
+    const session_url = `${url}/issues`;
+
+    try {
+        const { data } = await axios.get(session_url, {
+            params: {
+                id: 'ECE929'
+            }
+        });
+        return data;
+    }
+    catch (error) {
+        console.log(error);
+        return error;
+    }
+}
+
 export async function addIssue(token, newIssue) {
 
     const bearerToken = 'Bearer ' + token;
@@ -42,6 +59,34 @@ export async function addIssue(token, newIssue) {
 
         if (error.response.status === 500) {
             return { status: 500, msg: 'Check date format yyyy-dd-mm or server status' };
+        }
+    }
+}
+
+
+export async function updateIssueStatus({ acc_no, id }) {
+    const session_url = `${url}/issues`;
+
+    try {
+        const { data } = await axios.patch(session_url, {
+            returned: true,
+        }, {
+            params: {
+                acc_no,
+                id
+            },
+            headers: {
+                "content-type": "application/json",
+            }
+        });
+        return data;
+    }
+    catch (error) {
+        if (error.response.status === 400) {
+            return 'BAD_REQUEST'
+        }
+        if (error.response.status === 500) {
+            return 'ERROR'
         }
     }
 }

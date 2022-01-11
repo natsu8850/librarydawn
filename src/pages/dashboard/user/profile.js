@@ -1,44 +1,74 @@
+import { useState } from "react"
 import styled from "styled-components"
 import UserHeader from "../../../Components/Dashboard/User/Header"
+import { getUserIssues } from "../../../utils/issuesAPI";
 
-function profile() {
-    return (
-        <div>
-            <UserHeader />
-            <Wrapper>
-                <div className="accordion-wrap">
-                    <div className="accordion">
-                        <a href="#" className="active"><i className="fa fa-user"></i> Profile</a>
-                        <div className="sub-nav active">
-                            <div className="html about-me">
-                                <div className="photo">
-                                </div>
-                                <h4>Name </h4>
-                            </div>
-                        </div>
-                        <a href="#"><i className="fa fa-comments"></i>Faculty ID</a>
-                        <a href="#"><i className="fa fa-comments"></i>Department ID</a>
-                        <a href="#"><i className="fa fa-envelope"></i> Issue history</a>
-                        <div className="sub-nav">
-                            <a href="#">Issue1 </a>
-                            <a href="#">Issue2</a>
-                            <a href="#">Issue3</a>
-                        </div>
-                    </div>
+function Profile() {
+
+  const [issues, setIssues] = useState(null);
+
+  async function getIssues() {
+    const data = await getUserIssues();
+    setIssues(data);
+    console.log(issues)
+  }
+
+  return (
+    <div>
+      <UserHeader />
+      <Wrapper>
+        <div className="accordion-wrap">
+          <div className="accordion">
+            <a href="#" className="active"><i className="fa fa-user"></i> Profile</a>
+            <div className="sub-nav active">
+              <div className="html about-me">
+                <div className="photo">
                 </div>
-                <Side>
-                    HEY
-                </Side>
-            </Wrapper>
+                <h4>Name </h4>
+              </div>
+            </div>
+            <a href="#"><i className="fa fa-comments"></i>Faculty ID</a>
+            <a href="#"><i className="fa fa-comments"></i>Department ID</a>
+            <a href="#"><i className="fa fa-envelope"></i> Issue history</a>
+            <div className="sub-nav">
+              <a onClick={getIssues}>Fetch issues</a>
+            </div>
+          </div>
         </div>
-    )
+        <Side>
+          {issues ?
+            <>{
+              issues.map(value =>
+              (
+                <div key={value.id} className='sidediv'>
+                  <p><strong>Acession Number: </strong> {value.acc_no}</p>
+                  <p><strong>Date Issues: </strong> {value.date_issued}</p>
+                  <p><strong>Due Date: </strong> {value.due_date}</p>
+                </div>
+              )
+              )
+            }
+            </>
+
+            : <div>Nothing to display</div>
+          }
+        </Side>
+      </Wrapper>
+    </div>
+  )
 }
 
-export default profile
+export default Profile
 
 
 const Side = styled.div`
 
+  .sidediv{
+    background: #eee;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 10px;
+  }
 `
 
 const Wrapper = styled.div`
@@ -128,7 +158,7 @@ const Wrapper = styled.div`
     position: relative;
     border: 4px solid rgb(73, 32, 4);
     box-shadow: 0 6px 20px 0 rgba(0, 0, 0, .19), 0 8px 17px 0 rgba(0, 0, 0, .2);
-    background: url(teacher.jpg) no-repeat center;
+    background: url('/images/teacher.jpg') no-repeat center;
     background-size: 95px 95px;
   }
 `

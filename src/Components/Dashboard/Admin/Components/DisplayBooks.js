@@ -1,7 +1,7 @@
 import styled from "styled-components"
 import { FaChevronCircleDown, FaChevronCircleUp } from "react-icons/fa"
 import { useRef, useState } from "react";
-import { deleteBookApi } from "../../../../utils/booksAPI";
+import { deleteBookApi, getBookAuthorAPI } from "../../../../utils/booksAPI";
 
 function DisplayBooks({ book }) {
 
@@ -19,13 +19,23 @@ function DisplayBooks({ book }) {
     const [height, setHeight] = useState('0px');
     const [isDisabled, setIsDisabled] = useState(false);
 
+    const [authors, setAuthors] = useState(null);
 
-    // async function deleteBook() {
-    //     const data = await deleteBookApi(book.acc_no);
-    //     if (data)
-    //         toggleAccordion();
-    //     setIsDisabled(true);
-    // }
+    async function getAuthor() {
+        const data = await getBookAuthorAPI(book.acc_no);
+        if (data === 'ERROR') {
+            alert('Something went wrong')
+            return;
+        }
+        else if (data === 'NOT_FOUND') {
+            alert('Authors not found')
+            return;
+        }
+        else {
+            setAuthors(data.author)
+            console.log(data);
+        }
+    }
 
     return (
         <Wrapper>
@@ -55,14 +65,23 @@ function DisplayBooks({ book }) {
                 <Fields>
                     <strong>Year: </strong> {book.pub_year}
                 </Fields>
-                <DeleteButton>
+                {
+                    authors ?
+                        <Fields>
+                            <strong>Author: </strong> {authors}
+                        </Fields> :
+                        <button className="authorbtn" onClick={getAuthor}>
+                            View authors
+                        </button>
+                }
+                {/* <DeleteButton>
                     <Confirmation visibility={isConfirmation}>
                         Are you sure to delete?
                         <SureToProceedButton bgColor='#25AE32' >Yes</SureToProceedButton>
                         <SureToProceedButton bgColor='#D0111F' onClick={() => setIsConfirmation(false)}>No</SureToProceedButton>
                     </Confirmation>
                     <VerifyButtonButton visibility={isConfirmation} onClick={() => setIsConfirmation(true)}>Delete</VerifyButtonButton>
-                </DeleteButton>
+                </DeleteButton> */}
             </AccordionContent>
         </Wrapper>
     )
@@ -78,6 +97,12 @@ const Wrapper = styled.div`
     border-radius: 10px;
     padding: 20px;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+
+    .authorbtn{
+        padding: 10px;
+        margin-top: 20px;
+        cursor: pointer;
+    }
 `
 
 const BeforeExpand = styled.button`

@@ -1,5 +1,6 @@
-import { useRef, useState } from "react"
+import { useContext, useRef, useState } from "react"
 import styled from "styled-components";
+import { AuthContext } from "../../../../Context/authContext/AuthContext";
 import { addIssue, getAllIssues } from "../../../../utils/issuesAPI";
 import DisplayIssue from "./DisplayIssue";
 
@@ -7,8 +8,8 @@ function ManageIssuesDash() {
 
     const [issues, setIssues] = useState([])
 
-    const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IkxJQjEyMyIsImVtYWlsX3dvcmsiOiJhc2RmYWEiLCJpc0xpYnJhcmlhbiI6dHJ1ZSwiaWF0IjoxNjQxNzk0ODM2LCJleHAiOjE2NDQzODY4MzZ9.fcbGrNM5JPZajl_xZmNebjStOVgHSryWRUpy4Lp8cp4';
-
+    const { user } = useContext(AuthContext);
+    const token = user.token;
 
     async function fetch() {
         const data = await getAllIssues(token);

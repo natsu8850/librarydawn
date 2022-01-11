@@ -1,14 +1,17 @@
+import { useRouter } from "next/router"
 import styled from "styled-components"
 
 function UserHeader() {
+
+    const router = useRouter();
     return (
         <Header>
             <nav className="mainNav">
                 <div className="mainNav__logo">LIBRARY</div>
                 <div className="mainNav__links">
-                    <a href="" className="mainNav__link">ISSUES</a>
-                    <a href="" className="mainNav__link">PROFILE</a>
-                    <a href="" className="mainNav__link">BOOKS</a>
+                    <a onClick={() => router.push('/dashboard/user/profile')} className="mainNav__link">ISSUES</a>
+                    <a onClick={() => router.push('/dashboard/user/profile')} className="mainNav__link">PROFILE</a>
+                    <a onClick={() => router.push('/dashboard/user/profile')} className="mainNav__link">BOOKS</a>
                 </div>
                 <div className="mainNav__icon">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
